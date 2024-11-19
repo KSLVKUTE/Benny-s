@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Employés</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #121212; /* Fond sombre */
+            color: #fff; /* Texte blanc */
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        header button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        main {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        /* Formulaire à gauche */
+        .form-container {
+            flex: 1;
+            padding: 20px;
+            background-color: #1e1e1e;
+            margin-right: 10px;
+            border-radius: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form input, form select, form button {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        form button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Liste des employés à droite */
+        .employee-list-container {
+            flex: 1;
+            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .employee {
+            background-color: #000; /* Fond noir */
+            color: #fff; /* Texte blanc */
+            border: 1px solid #555;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .employee button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .employee button.edit {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+
+        .employee button.delete {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Gestion des Employés</h1>
+        <button onclick="location.href='index.html'">Retour au Menu</button>
+    </header>
+
+    <main>
+        <!-- Formulaire d'inscription -->
+        <div class="form-container">
+            <form id="addEmployeeForm">
+                <input type="text" placeholder="Nom" id="nom" required>
+                <input type="text" placeholder="Prénom" id="prenom" required>
+                <select id="status" required>
+                    <option value="">Présent ou Absent</option>
+                    <option value="Présent">Présent</option>
+                    <option value="Absent">Absent</option>
+                </select>
+                <input type="number" placeholder="Salaire (€)" id="salaire" required>
+                <input type="number" placeholder="Quota" id="quota" required>
+                <input type="number" placeholder="Kits repas produits" id="kitsRepas" required>
+                <input type="text" placeholder="Grade" id="grade" required>
+                <button type="submit">Ajouter Employé</button>
+            </form>
+        </div>
+
+        <!-- Liste des employés (Affichée à droite) -->
+        <div class="employee-list-container" id="employeeListContainer">
+            <h3>Liste des Employés</h3>
+            <div id="employeeList"></div>
+        </div>
+    </main>
+
+    <script>
+        const employeeList = document.getElementById("employeeList");
+
+        document.getElementById("addEmployeeForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const nom = document.getElementById("nom").value;
+            const prenom = document.getElementById("prenom").value;
+            const status = document.getElementById("status").value;
+            const salaire = document.getElementById("salaire").value;
+            const quota = document.getElementById("quota").value;
+            const kitsRepas = document.getElementById("kitsRepas").value;
+            const grade = document.getElementById("grade").value;
+
+            const currentDate = new Date().toLocaleDateString();
+
+            // Création de l'affichage d'un employé
+            const employeeDiv = document.createElement("div");
+            employeeDiv.className = "employee"; // La classe 'employee' applique les styles appropriés
+
+            employeeDiv.innerHTML = `
+                <p><strong>Nom :</strong> ${nom}</p>
+                <p><strong>Prénom :</strong> ${prenom}</p>
+                <p><strong>Status :</strong> ${status}</p>
+                <p><strong>Salaire :</strong> €${salaire}</p>
+                <p><strong>Quota :</strong> ${quota}</p>
+                <p><strong>Kits Repas :</strong> ${kitsRepas}</p>
+                <p><strong>Grade :</strong> ${grade}</p>
+                <p><strong>Date d'inscription :</strong> ${currentDate}</p>
+                <button class="edit">Modifier</button>
+                <button class="delete">Supprimer</button>
+            `;
+
+            employeeList.appendChild(employeeDiv);
+
+            // Reset du formulaire
+            e.target.reset();
+
+            // Ajout des actions Modifier et Supprimer
+            addEditAndDeleteListeners(employeeDiv);
+
+            alert("Employé ajouté avec succès !");
+        });
+
+        function addEditAndDeleteListeners(employeeDiv) {
+            // Suppression
+            employeeDiv.querySelector(".delete").addEventListener("click", function () {
+                if (confirm("Voulez-vous vraiment supprimer cet employé ?")) {
+                    employeeDiv.remove();
+                }
+            });
+
+            // Modification
+            employeeDiv.querySelector(".edit").addEventListener("click", function () {
+                const nom = prompt("Modifier le nom :", employeeDiv.children[0].textContent.split(": ")[1]);
+                const prenom = prompt("Modifier le prénom :", employeeDiv.children[1].textContent.split(": ")[1]);
+                const status = prompt("Modifier le status (Présent/Absent) :", employeeDiv.children[2].textContent.split(": ")[1]);
+                const salaire = prompt("Modifier le salaire (€) :", employeeDiv.children[3].textContent.split(": ")[1].slice(1));
+                const quota = prompt("Modifier le quota :", employeeDiv.children[4].textContent.split(": ")[1]);
+                const kitsRepas = prompt("Modifier le nombre de kits repas :", employeeDiv.children[5].textContent.split(": ")[1]);
+                const grade = prompt("Modifier le grade :", employeeDiv.children[6].textContent.split(": ")[1]);
+
+                if (nom) employeeDiv.children[0].innerHTML = `<strong>Nom :</strong> ${nom}`;
+                if (prenom) employeeDiv.children[1].innerHTML = `<strong>Prénom :</strong> ${prenom}`;
+                if (status) employeeDiv.children[2].innerHTML = `<strong>Status :</strong> ${status}`;
+                if (salaire) employeeDiv.children[3].innerHTML = `<strong>Salaire :</strong> €${salaire}`;
+                if (quota) employeeDiv.children[4].innerHTML = `<strong>Quota :</strong> ${quota}`;
+                if (kitsRepas) employeeDiv.children[5].innerHTML = `<strong>Kits Repas :</strong> ${kitsRepas}`;
+                if (grade) employeeDiv.children[6].innerHTML = `<strong>Grade :</strong> ${grade}`;
+
+                alert("Employé modifié avec succès !");
+            });
+        }
+    </script>
+</body>
+</html>
+

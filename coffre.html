@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Gestion du Coffre-fort</title> 
+    <style> 
+        /* Global Styles */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            background-color: #161b22;
+            border-bottom: 1px solid #58a6ff;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            color: #58a6ff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px #58a6ff, 0 0 10px #58a6ff;
+        }
+
+        header button {
+            background-color: #21262d;
+            color: #58a6ff;
+            border: 1px solid #58a6ff;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        header button:hover {
+            background-color: #58a6ff;
+            color: #0d1117;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .coffre-container, .form-container, .enterprise-list-container {
+            background-color: #161b22;
+            border: 1px solid #58a6ff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 0 10px #58a6ff;
+        }
+
+        .coffre-container h2, 
+        .form-container h2, 
+        .enterprise-list-container h2 {
+            margin-bottom: 15px;
+            color: #58a6ff;
+            text-align: center;
+        }
+
+        .coffre-container input, 
+        .form-container input, 
+        .form-container button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: 1px solid #58a6ff;
+            border-radius: 5px;
+            background-color: #21262d;
+            color: #c9d1d9;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .coffre-container input:focus, 
+        .form-container input:focus {
+            border-color: #58a6ff;
+            box-shadow: 0 0 5px #58a6ff;
+        }
+
+        .coffre-container button, .form-container button {
+            background-color: #58a6ff;
+            color: #0d1117;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .coffre-container button:hover, 
+        .form-container button:hover {
+            background-color: #1f6feb;
+        }
+
+        .enterprise-list-container .enterprise {
+            background-color: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            color: #c9d1d9;
+        }
+
+        .enterprise p {
+            margin: 5px 0;
+        }
+
+        .enterprise button {
+            background-color: #30363d;
+            color: #58a6ff;
+            border: 1px solid #58a6ff;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 5px;
+        }
+
+        .enterprise button:hover {
+            background-color: #58a6ff;
+            color: #0d1117;
+        }
+
+        .paid-status label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .paid-status input[type="checkbox"] {
+            accent-color: #58a6ff;
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Gestion du Coffre-fort</h1>
+        <button onclick="location.href='index.html'">Retour au Menu</button>
+    </header>
+
+    <main>
+        <!-- Section Coffre -->
+        <div class="coffre-container">
+            <h2>Gestion du Montant</h2>
+            <p><strong>Montant dans le coffre (€) :</strong></p>
+            <input type="number" id="montantCoffre" value="56000000">
+            <button onclick="updateCoffre()">Mettre à jour le montant</button>
+            <p id="montantAffiche">Montant dans le coffre : €56000000</p>
+        </div>
+
+        <!-- Formulaire pour ajouter une entreprise -->
+        <div class="form-container">
+            <h2>Ajouter une Entreprise</h2>
+            <form id="addEnterpriseForm">
+                <input type="text" placeholder="Nom de l'entreprise" id="nomEntreprise" required>
+                <input type="number" placeholder="Montant à payer (€)" id="montantPayer" required>
+                <button type="submit">Ajouter Entreprise</button>
+            </form>
+        </div>
+
+        <!-- Liste des entreprises -->
+        <div class="enterprise-list-container">
+            <h2>Liste des Entreprises</h2>
+            <div id="enterpriseList"></div>
+        </div>
+    </main>
+
+    <script>
+        const enterpriseList = document.getElementById("enterpriseList");
+        const montantAffiche = document.getElementById("montantAffiche");
+        const montantCoffreInput = document.getElementById("montantCoffre");
+
+        window.onload = () => {
+            const savedCoffre = localStorage.getItem("montantCoffre");
+            const savedEnterprises = JSON.parse(localStorage.getItem("enterprises")) || [];
+
+            if (savedCoffre) {
+                montantCoffreInput.value = savedCoffre;
+                montantAffiche.textContent = `Montant dans le coffre : €${savedCoffre}`;
+            }
+
+            savedEnterprises.forEach(data => createEnterpriseElement(data.nom, data.montant, data.paid));
+        };
+
+        function updateCoffre() {
+            const montant = montantCoffreInput.value;
+            montantAffiche.textContent = `Montant dans le coffre : €${montant}`;
+            localStorage.setItem("montantCoffre", montant);
+            alert("Montant du coffre mis à jour !");
+        }
+
+        document.getElementById("addEnterpriseForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const nomEntreprise = document.getElementById("nomEntreprise").value;
+            const montantPayer = document.getElementById("montantPayer").value;
+
+            createEnterpriseElement(nomEntreprise, montantPayer, false);
+            saveEnterprises();
+
+            e.target.reset();
+        });
+
+        function createEnterpriseElement(nom, montant, paid) {
+            const enterpriseDiv = document.createElement("div");
+            enterpriseDiv.className = "enterprise";
+
+            const paidChecked = paid ? "checked" : "";
+            enterpriseDiv.innerHTML = `
+                <p><strong>Entreprise :</strong> ${nom}</p>
+                <p><strong>Montant à payer :</strong> €${montant}</p>
+                <div class="paid-status">
+                    <label>
+                        <input type="checkbox" class="paid-checkbox" ${paidChecked}> Payée ?
+                    </label>
+                </div>
+                <button class="edit">Modifier</button>
+                <button class="delete">Supprimer</button>
+            `;
+
+            enterpriseList.appendChild(enterpriseDiv);
+
+            addEditAndDeleteListeners(enterpriseDiv);
+        }
+
+        function addEditAndDeleteListeners(enterpriseDiv) {
+            enterpriseDiv.querySelector(".delete").addEventListener("click", function () {
+                if (confirm("Voulez-vous vraiment supprimer cette entreprise ?")) {
+                    enterpriseDiv.remove();
+                    saveEnterprises();
+                }
+            });
+
+            enterpriseDiv.querySelector(".edit").addEventListener("click", function () {
+                const nomEntreprise = prompt("Modifier le nom de l'entreprise :", enterpriseDiv.children[0].textContent.split(": ")[1]);
+                const montant = prompt("Modifier le montant à payer :", enterpriseDiv.children[1].textContent.split(": ")[1]);
+
+                if (nomEntreprise && montant) {
+                    enterpriseDiv.children[0].textContent = `Entreprise : ${nomEntreprise}`;
+                    enterpriseDiv.children[1].textContent = `Montant à payer : €${montant}`;
+                    saveEnterprises();
+                }
+            });
+
+            enterpriseDiv.querySelector(".paid-checkbox").addEventListener("change", saveEnterprises);
+        }
+
+        function saveEnterprises() {
+            const enterprises = [];
+
+            document.querySelectorAll(".enterprise").forEach(div => {
+                const nom = div.children[0].textContent.split(": ")[1];
+                const montant = div.children[1].textContent.split(": ")[1].replace("€", "");
+                const paid = div.querySelector(".paid-checkbox").checked;
+
+                enterprises.push({ nom, montant, paid });
+            });
+
+            localStorage.setItem("enterprises", JSON.stringify(enterprises));
+        }
+    </script>
+</body>
+</html>
+
+
+

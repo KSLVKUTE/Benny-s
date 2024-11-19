@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Gestion des Services</h1>
+        <button onclick="location.href='index.html'">Retour au Menu</button>
+    </header>
+
+    <main>
+        <form id="addServiceForm">
+            <input type="text" placeholder="Nom du service" id="nomService" required>
+            <input type="number" placeholder="Prix (€)" id="prixService" required>
+            <button type="submit">Ajouter Service</button>
+        </form>
+        <div id="serviceList"></div>
+    </main>
+
+    <script>
+        // Gestion des services : ajout, modification et suppression
+        const serviceList = document.getElementById("serviceList");
+        document.getElementById("addServiceForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            // Récupération des champs
+            const nom = document.getElementById("nomService").value;
+            const prix = document.getElementById("prixService").value;
+
+            // Création d'un nouveau service
+            const serviceDiv = document.createElement("div");
+            serviceDiv.className = "service";
+
+            serviceDiv.innerHTML = `
+                <p>Nom du service: <span class="service-nom">${nom}</span></p>
+                <p>Prix: €<span class="service-prix">${prix}</span></p>
+                <button class="edit-service">Modifier</button>
+                <button class="delete-service">Supprimer</button>
+            `;
+
+            serviceList.appendChild(serviceDiv);
+
+            // Reset du formulaire
+            e.target.reset();
+
+            // Ajout des actions Modifier et Supprimer
+            addEditAndDeleteListeners(serviceDiv);
+            alert("Service ajouté avec succès !");
+        });
+
+        function addEditAndDeleteListeners(serviceDiv) {
+            // Suppression
+            serviceDiv.querySelector(".delete-service").addEventListener("click", function () {
+                if (confirm("Voulez-vous vraiment supprimer ce service ?")) {
+                    serviceDiv.remove();
+                }
+            });
+
+            // Modification
+            serviceDiv.querySelector(".edit-service").addEventListener("click", function () {
+                const nom = serviceDiv.querySelector(".service-nom");
+                const prix = serviceDiv.querySelector(".service-prix");
+
+                // Demander de nouvelles valeurs
+                const newNom = prompt("Modifier le nom du service :", nom.textContent);
+                const newPrix = prompt("Modifier le prix (€) :", prix.textContent);
+
+                // Mise à jour des valeurs
+                if (newNom) nom.textContent = newNom;
+                if (newPrix) prix.textContent = newPrix;
+
+                alert("Service modifié avec succès !");
+            });
+        }
+    </script>
+</body>
+</html>

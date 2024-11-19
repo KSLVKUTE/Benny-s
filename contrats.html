@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrats</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Gestion des Contrats</h1>
+        <button onclick="location.href='index.html'">Retour au Menu</button>
+    </header>
+
+    <main>
+        <form id="addContractForm">
+            <input type="text" placeholder="Nom de l'entreprise" id="entrepriseContrat" required>
+            <input type="number" placeholder="Prix (€)" id="prixContrat" required>
+            <input type="date" id="dateDebut" required>
+            <input type="date" id="dateFin" required>
+            <button type="submit">Ajouter Contrat</button>
+        </form>
+        <div id="contractList"></div>
+    </main>
+
+    <script>
+        // Gestion des contrats : ajout, modification et suppression
+        const contractList = document.getElementById("contractList");
+        document.getElementById("addContractForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            // Récupération des champs
+            const entreprise = document.getElementById("entrepriseContrat").value;
+            const prix = document.getElementById("prixContrat").value;
+            const debut = document.getElementById("dateDebut").value;
+            const fin = document.getElementById("dateFin").value;
+
+            // Création d'un nouveau contrat
+            const contractDiv = document.createElement("div");
+            contractDiv.className = "contract";
+
+            contractDiv.innerHTML = `
+                <p>Entreprise: <span class="contract-entreprise">${entreprise}</span></p>
+                <p>Prix: €<span class="contract-prix">${prix}</span></p>
+                <p>Date de début: <span class="contract-debut">${debut}</span></p>
+                <p>Date de fin: <span class="contract-fin">${fin}</span></p>
+                <button class="edit-contract">Modifier</button>
+                <button class="delete-contract">Supprimer</button>
+            `;
+
+            contractList.appendChild(contractDiv);
+
+            // Reset du formulaire
+            e.target.reset();
+
+            // Ajout des actions Modifier et Supprimer
+            addEditAndDeleteListeners(contractDiv);
+            alert("Contrat ajouté avec succès !");
+        });
+
+        function addEditAndDeleteListeners(contractDiv) {
+            // Suppression
+            contractDiv.querySelector(".delete-contract").addEventListener("click", function () {
+                if (confirm("Voulez-vous vraiment supprimer ce contrat ?")) {
+                    contractDiv.remove();
+                }
+            });
+
+            // Modification
+            contractDiv.querySelector(".edit-contract").addEventListener("click", function () {
+                const entreprise = contractDiv.querySelector(".contract-entreprise");
+                const prix = contractDiv.querySelector(".contract-prix");
+                const debut = contractDiv.querySelector(".contract-debut");
+                const fin = contractDiv.querySelector(".contract-fin");
+
+                // Demander de nouvelles valeurs
+                const newEntreprise = prompt("Modifier le nom de l'entreprise :", entreprise.textContent);
+                const newPrix = prompt("Modifier le prix (€) :", prix.textContent);
+                const newDebut = prompt("Modifier la date de début :", debut.textContent);
+                const newFin = prompt("Modifier la date de fin :", fin.textContent);
+
+                // Mise à jour des valeurs
+                if (newEntreprise) entreprise.textContent = newEntreprise;
+                if (newPrix) prix.textContent = newPrix;
+                if (newDebut) debut.textContent = newDebut;
+                if (newFin) fin.textContent = newFin;
+
+                alert("Contrat modifié avec succès !");
+            });
+        }
+    </script>
+</body>
+</html>
