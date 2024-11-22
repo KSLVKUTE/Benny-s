@@ -4,11 +4,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entreprise de Mécano</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Importation d'une nouvelle police élégante */
+        @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap'); /* Police Anton moderne et audacieuse */
+
+        /* Style général */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #121212; /* Fond sombre pour un contraste élevé */
+            color: #ffffff; /* Texte blanc */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Titre avec une nouvelle police */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        header h1 {
+            font-family: 'Anton', sans-serif; /* Police Anton moderne et impactante */
+            color: #ff6f00; /* Couleur orange vif pour capter l'attention */
+            font-size: 7em; /* Taille du titre grandement augmentée */
+            letter-spacing: 3px; /* Espacement légèrement plus large */
+            text-shadow: 6px 6px 12px rgba(0, 0, 0, 0.7); /* Ombre plus marquée pour renforcer l'effet */
+            text-transform: uppercase; /* Texte en majuscules pour un impact visuel */
+            animation: titleAnimation 2s ease-out; /* Animation pour l'apparition du titre */
+        }
+
+        /* Animation du titre */
+        @keyframes titleAnimation {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Conteneur des boutons */
+        .menu-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 35px;
+            margin-top: 50px;
+            animation: fadeIn 1.5s ease-out; /* Animation des boutons */
+        }
+
+        /* Animation des boutons */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Style des boutons */
+        button {
+            background-color: #ff6f00; /* Fond orange vif */
+            color: black;
+            font-size: 1.3em;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Effet survol des boutons */
+        button:hover {
+            background-color: #ff8c00; /* Orange plus clair */
+            transform: translateY(-5px); /* Légère remontée */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Effet pression au clic */
+        button:active {
+            transform: scale(0.95); /* Réduction au clic */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Réduction de l'ombre */
+        }
+
+        /* Adaptation pour petits écrans */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 5em;
+            }
+
+            button {
+                font-size: 1.1em;
+                padding: 15px 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu-container {
+                flex-direction: column;
+                gap: 25px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Benny's</h1>
+        <h1>Entreprise de Mécano</h1>
     </header>
 
     <main class="menu-container">
@@ -17,7 +132,5 @@
         <button onclick="location.href='contrats.html'">Contrats</button>
         <button onclick="location.href='services.html'">Services</button>
     </main>
-
-    <script src="script.js"></script>
 </body>
 </html>

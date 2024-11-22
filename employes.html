@@ -4,22 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Employés</title>
-    <link rel="stylesheet" href="style.css">
     <style>
+        /* Style général pour la page */
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
             font-family: Arial, sans-serif;
-            background-color: #121212; /* Fond sombre */
+            background-color: #000; /* Fond noir */
             color: #fff; /* Texte blanc */
             margin: 0;
             padding: 0;
         }
 
         header {
+            width: 100%;
             text-align: center;
-            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #222; /* Fond plus clair pour l'en-tête */
         }
 
         header h1 {
@@ -31,27 +33,31 @@
             margin-top: 10px;
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #007bff;
-            color: #fff;
+            background-color: orange; /* Boutons orange */
+            color: black; /* Texte noir */
             border: none;
+            border-radius: 5px;
             cursor: pointer;
+        }
+
+        header button:hover {
+            background-color: #e69500; /* Orange plus foncé au survol */
         }
 
         main {
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            width: 90%;
+            width: 100%;
             max-width: 1200px;
+            margin-top: 20px;
         }
 
         /* Formulaire à gauche */
         .form-container {
             flex: 1;
             padding: 20px;
-            background-color: #1e1e1e;
+            background-color: #222; /* Fond gris foncé pour le formulaire */
+            border-radius: 8px;
             margin-right: 10px;
-            border-radius: 10px;
         }
 
         form {
@@ -59,57 +65,82 @@
             flex-direction: column;
         }
 
-        form input, form select, form button {
-            margin-bottom: 10px;
+        form input, form button, form select {
+            margin-bottom: 15px;
             padding: 10px;
             font-size: 16px;
-            border: none;
+            border: 1px solid #555; /* Bordures subtiles */
             border-radius: 5px;
+            background-color: #333; /* Fond gris foncé pour les champs */
+            color: #fff;
         }
 
         form button {
-            background-color: #007bff;
-            color: white;
+            background-color: orange; /* Boutons orange */
+            color: black;
+            border: none;
             cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #e69500; /* Orange plus foncé au survol */
         }
 
         /* Liste des employés à droite */
         .employee-list-container {
             flex: 1;
             padding: 20px;
-            background-color: #1e1e1e;
-            border-radius: 10px;
-            max-height: 600px;
-            overflow-y: auto;
+            background-color: #222; /* Fond gris foncé pour la liste */
+            border-radius: 8px;
+            margin-left: 10px;
+            max-height: 500px;
+            overflow-y: auto; /* Scroll si contenu trop long */
+        }
+
+        .employee-list-container h3 {
+            margin-top: 0;
+            text-align: center;
+            font-size: 1.5em;
+            color: orange;
         }
 
         .employee {
-            background-color: #000; /* Fond noir */
-            color: #fff; /* Texte blanc */
-            border: 1px solid #555;
-            margin-bottom: 10px;
-            padding: 10px;
+            background-color: #333; /* Fond gris foncé pour chaque employé */
+            border: 1px solid #444; /* Bordure subtile */
+            margin-bottom: 15px;
+            padding: 15px;
             border-radius: 5px;
+        }
+
+        .employee p {
+            margin: 5px 0;
         }
 
         .employee button {
             margin-top: 10px;
-            padding: 5px 10px;
+            padding: 8px 15px;
             font-size: 14px;
-            cursor: pointer;
+            border: none;
             border-radius: 5px;
+            cursor: pointer;
         }
 
         .employee button.edit {
-            background-color: #007bff;
-            color: white;
-            border: none;
+            background-color: orange; /* Boutons orange */
+            color: black;
+        }
+
+        .employee button.edit:hover {
+            background-color: #e69500;
         }
 
         .employee button.delete {
-            background-color: #dc3545;
+            background-color: #dc3545; /* Rouge pour supprimer */
             color: white;
-            border: none;
+        }
+
+        .employee button.delete:hover {
+            background-color: #b02a37;
         }
     </style>
 </head>
@@ -158,12 +189,11 @@
             const quota = document.getElementById("quota").value;
             const kitsRepas = document.getElementById("kitsRepas").value;
             const grade = document.getElementById("grade").value;
-
             const currentDate = new Date().toLocaleDateString();
 
             // Création de l'affichage d'un employé
             const employeeDiv = document.createElement("div");
-            employeeDiv.className = "employee"; // La classe 'employee' applique les styles appropriés
+            employeeDiv.className = "employee";
 
             employeeDiv.innerHTML = `
                 <p><strong>Nom :</strong> ${nom}</p>
@@ -180,7 +210,7 @@
 
             employeeList.appendChild(employeeDiv);
 
-            // Reset du formulaire
+            // Réinitialisation du formulaire
             e.target.reset();
 
             // Ajout des actions Modifier et Supprimer

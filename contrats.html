@@ -4,7 +4,146 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contrats</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Style général */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            background-color: #222;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+            color: orange;
+        }
+
+        header button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: orange;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        header button:hover {
+            background-color: #e69500;
+        }
+
+        main {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+
+        /* Formulaire à gauche */
+        .form-container {
+            flex: 1;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form input, form button {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+        }
+
+        form button {
+            background-color: orange;
+            color: black;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #e69500;
+        }
+
+        /* Liste des contrats à droite */
+        .contract-list-container {
+            flex: 1;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 8px;
+            margin-left: 10px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .contract-list-container h3 {
+            margin-top: 0;
+            text-align: center;
+            font-size: 1.5em;
+            color: orange;
+        }
+
+        .contract {
+            background-color: #333;
+            border: 1px solid #444;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .contract p {
+            margin: 5px 0;
+        }
+
+        .contract button {
+            margin-top: 10px;
+            padding: 8px 15px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .contract .edit-contract {
+            background-color: orange;
+            color: black;
+        }
+
+        .contract .edit-contract:hover {
+            background-color: #e69500;
+        }
+
+        .contract .delete-contract {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .contract .delete-contract:hover {
+            background-color: #b02a37;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -13,77 +152,72 @@
     </header>
 
     <main>
-        <form id="addContractForm">
-            <input type="text" placeholder="Nom de l'entreprise" id="entrepriseContrat" required>
-            <input type="number" placeholder="Prix (€)" id="prixContrat" required>
-            <input type="date" id="dateDebut" required>
-            <input type="date" id="dateFin" required>
-            <button type="submit">Ajouter Contrat</button>
-        </form>
-        <div id="contractList"></div>
+        <!-- Formulaire -->
+        <div class="form-container">
+            <form id="addContractForm">
+                <input type="text" placeholder="Nom de l'entreprise" id="entrepriseContrat" required>
+                <input type="number" placeholder="Prix (€)" id="prixContrat" required>
+                <input type="date" id="dateDebut" required>
+                <input type="date" id="dateFin" required>
+                <button type="submit">Ajouter Contrat</button>
+            </form>
+        </div>
+
+        <!-- Liste des contrats -->
+        <div class="contract-list-container">
+            <h3>Liste des Contrats</h3>
+            <div id="contractList"></div>
+        </div>
     </main>
 
     <script>
-        // Gestion des contrats : ajout, modification et suppression
         const contractList = document.getElementById("contractList");
+
         document.getElementById("addContractForm").addEventListener("submit", function (e) {
             e.preventDefault();
 
-            // Récupération des champs
             const entreprise = document.getElementById("entrepriseContrat").value;
             const prix = document.getElementById("prixContrat").value;
             const debut = document.getElementById("dateDebut").value;
             const fin = document.getElementById("dateFin").value;
 
-            // Création d'un nouveau contrat
             const contractDiv = document.createElement("div");
             contractDiv.className = "contract";
 
             contractDiv.innerHTML = `
-                <p>Entreprise: <span class="contract-entreprise">${entreprise}</span></p>
-                <p>Prix: €<span class="contract-prix">${prix}</span></p>
-                <p>Date de début: <span class="contract-debut">${debut}</span></p>
-                <p>Date de fin: <span class="contract-fin">${fin}</span></p>
+                <p><strong>Entreprise :</strong> ${entreprise}</p>
+                <p><strong>Prix :</strong> €${prix}</p>
+                <p><strong>Date de début :</strong> ${debut}</p>
+                <p><strong>Date de fin :</strong> ${fin}</p>
                 <button class="edit-contract">Modifier</button>
                 <button class="delete-contract">Supprimer</button>
             `;
 
             contractList.appendChild(contractDiv);
 
-            // Reset du formulaire
             e.target.reset();
-
-            // Ajout des actions Modifier et Supprimer
             addEditAndDeleteListeners(contractDiv);
+
             alert("Contrat ajouté avec succès !");
         });
 
         function addEditAndDeleteListeners(contractDiv) {
-            // Suppression
             contractDiv.querySelector(".delete-contract").addEventListener("click", function () {
                 if (confirm("Voulez-vous vraiment supprimer ce contrat ?")) {
                     contractDiv.remove();
                 }
             });
 
-            // Modification
             contractDiv.querySelector(".edit-contract").addEventListener("click", function () {
-                const entreprise = contractDiv.querySelector(".contract-entreprise");
-                const prix = contractDiv.querySelector(".contract-prix");
-                const debut = contractDiv.querySelector(".contract-debut");
-                const fin = contractDiv.querySelector(".contract-fin");
+                const entreprise = prompt("Modifier le nom de l'entreprise :", contractDiv.children[0].textContent.split(": ")[1]);
+                const prix = prompt("Modifier le prix (€) :", contractDiv.children[1].textContent.split(": ")[1]);
+                const debut = prompt("Modifier la date de début :", contractDiv.children[2].textContent.split(": ")[1]);
+                const fin = prompt("Modifier la date de fin :", contractDiv.children[3].textContent.split(": ")[1]);
 
-                // Demander de nouvelles valeurs
-                const newEntreprise = prompt("Modifier le nom de l'entreprise :", entreprise.textContent);
-                const newPrix = prompt("Modifier le prix (€) :", prix.textContent);
-                const newDebut = prompt("Modifier la date de début :", debut.textContent);
-                const newFin = prompt("Modifier la date de fin :", fin.textContent);
-
-                // Mise à jour des valeurs
-                if (newEntreprise) entreprise.textContent = newEntreprise;
-                if (newPrix) prix.textContent = newPrix;
-                if (newDebut) debut.textContent = newDebut;
-                if (newFin) fin.textContent = newFin;
+                if (entreprise) contractDiv.children[0].innerHTML = `<strong>Entreprise :</strong> ${entreprise}`;
+                if (prix) contractDiv.children[1].innerHTML = `<strong>Prix :</strong> €${prix}`;
+                if (debut) contractDiv.children[2].innerHTML = `<strong>Date de début :</strong> ${debut}`;
+                if (fin) contractDiv.children[3].innerHTML = `<strong>Date de fin :</strong> ${fin}`;
 
                 alert("Contrat modifié avec succès !");
             });
